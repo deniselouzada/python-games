@@ -2,12 +2,14 @@ import pygame
 import os
 
 # initialize pygame
-
 pygame.init()
 
+# configure screen
 width, height = 640, 480
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("My First Game")
+
+# set parameters
 bg_color = (255, 255, 255)
 fps = 60
 spaceship_height = 60
@@ -16,7 +18,6 @@ vel = 5
 border = pygame.Rect(width/2 - 5, 0, 10, height)
 
 # load images 
-
 yellow_spaceship_image = pygame.image.load(os.path.join('Assets', 'spaceship_yellow.png'))
 yellow_spaceship = pygame.transform.rotate(pygame.transform.scale(yellow_spaceship_image, (spaceship_width, spaceship_height)), 90)
 
@@ -24,14 +25,14 @@ red_spaceship_image = pygame.image.load(os.path.join('Assets', 'spaceship_red.pn
 red_spaceship = pygame.transform.rotate(pygame.transform.scale(red_spaceship_image, (spaceship_width, spaceship_height)), 270)
 
 # draw window   
-
 def draw_window(red, yellow):
     screen.fill(bg_color)
     screen.blit(yellow_spaceship, (yellow.x, yellow.y))
     screen.blit(red_spaceship, (red.x, red.y))
     pygame.draw.rect(screen, (0, 0, 0), border)
     pygame.display.update()
-    
+
+# handle movement of spaceships  
 def yellow_handle_movement(keys_pressed, yellow):
     if keys_pressed[pygame.K_a] and yellow.x - vel > 0 : # LEFT
         yellow.x -= vel
@@ -54,7 +55,6 @@ def red_handle_movement(keys_pressed, red):
         
         
 # main function 
-
 def main():
     red = pygame.Rect(500, 200, spaceship_width, spaceship_height)
     yellow = pygame.Rect(100, 200, spaceship_width, spaceship_height)
