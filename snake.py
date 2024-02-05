@@ -8,7 +8,7 @@ pygame.init()
 width, height = 600, 600
 size = (width, height)
 screen = pygame.display.set_mode(size)
-pygame.display.set_caption("My First Game")
+pygame.display.set_caption("Snake by @deniselouzada")
 
 #set constants
 fps = 3
@@ -92,6 +92,7 @@ def main():
     
     # set clock
     clock = pygame.time.Clock()
+    
     running = True
     
     # game loop
