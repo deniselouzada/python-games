@@ -19,53 +19,87 @@ size = 20
 faux_grid = [i for i in range(0, width - size, size)]
 
 # snake and snack definition
-snake = pygame.Rect(300, 300, size, size)
-snack = pygame.Rect(random.choice(faux_grid), random.choice(faux_grid), size, size)
+class Snake(pygame.sprite.Sprite):
+    def __init__(self, x, y, dx, dy):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((size, size))
+        self.image.fill(white)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.dx = dx
+        self.dy = dy
+        
+    def grow(self):
+        self.image.fill(white)
+        self.rect = self.image.get_rect()
+        
+    def update(self):
+        pass
+        
+
+class Snack(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((size, size))
+        self.image.fill(red)
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+
+# snake and snack instantiation
+snake = Snake(random.choice(faux_grid), random.choice(faux_grid), size, 0)
+snake_group = pygame.sprite.Group()
+
+snack = Snack(random.choice(faux_grid), random.choice(faux_grid))
 
 # functions
-def move_snake(dx, dy):
+def move_snake():
     keys_pressed = pygame.key.get_pressed()
         
-    if keys_pressed[pygame.K_LEFT] and dx != size:
-        dx = -size
-        dy = 0
-    if keys_pressed[pygame.K_RIGHT] and dx != -size:
-        dx = size
-        dy = 0
-    if keys_pressed[pygame.K_UP] and dy != size:
-        dx = 0
-        dy = -size
-    if keys_pressed[pygame.K_DOWN] and dy != -size:
-        dx = 0
-        dy = size
+    if keys_pressed[pygame.K_LEFT] and snake.dx != size:
+        snake.dx = -size
+        snake.dy = 0
+    if keys_pressed[pygame.K_RIGHT] and snake.dx != -size:
+        snake.dx = size
+        snake.dy = 0
+    if keys_pressed[pygame.K_UP] and snake.dy != size:
+        snake.dx = 0
+        snake.dy = -size
+    if keys_pressed[pygame.K_DOWN] and snake.dy != -size:
+        snake.dx = 0
+        snake.dy = size
         
-    snake.y += dy
-    snake.x += dx
-    return snake.x, snake.y, dx, dy
+    snake.rect.y += snake.dy
+    snake.rect.x += snake.dx
+    return snake.rect.x, snake.rect.y, snake.dx, snake.dy
 
 def edge_collision():
-    if snake.x < 0:
-        snake.x = width
-    if snake.x > width - size:
-        snake.x = 0
-    if snake.y < 0:
-        snake.y = height
-    if snake.y > height - size:
-        snake.y = 0
-    return snake.x, snake.y
+    if snake.rect.x < 0:
+        snake.rect.x = width - size
+    if snake.rect.x > width - size:
+        snake.rect.x = 0
+    if snake.rect.y < 0:
+        snake.rect.y = height - size
+    if snake.rect.y > height - size:
+        snake.rect.y = 0
+    return snake.rect.x, snake.rect.y
 
-# game over function
+def grow_snake():
+    pass
+
+# game over
 
 def game_over():
     pass
 
 def scoring(score):
-    if snake.colliderect(snack):
-        snack.x = random.choice(faux_grid)
-        snack.y = random.choice(faux_grid)
+    if pygame.sprite.collide_rect(snake, snack):
+        snack.rect.x = random.choice(faux_grid)
+        snack.rect.y = random.choice(faux_grid)
         score += 1
     font = pygame.font.Font(None, 36)
-    text= font.render(f"Score: {score}", 1, white)
+    text = font.render(f"Score: {score}", 1, white)
     return text, score
 
 # draw on screen
@@ -79,14 +113,7 @@ def draw(text):
 # main loop
 def main():
     
-    dx = size
-    dy = 0
-    
-    snake.x = random.choice(faux_grid)
-    snake.y = random.choice(faux_grid)
-    
-    snack.x = random.choice(faux_grid)
-    snack.y = random.choice(faux_grid)
+    #snake_group.draw(screen)
     
     score = 0
     
@@ -99,9 +126,9 @@ def main():
     while running:
         clock.tick(fps)
 
-        snake.x, snake.y, dx, dy = move_snake(dx, dy)
+        snake.rect.x, snake.rect.y, snake.dx, snake.dy = move_snake()
         
-        snake.x, snake.y = edge_collision()
+        snake.rect.x, snake.rect.y = edge_collision()
         
         text, score = scoring(score)
             
